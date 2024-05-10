@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Sensor Data and Fan Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .data {
+      margin-bottom: 10px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      margin-right: 10px;
+      text-decoration: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class='container'>
+    <h1>Sensor Data</h1>
+    <div class='data'>
+      <p>Temperature: <span id='temperature'></span> C</p>
+      <p>Humidity: <span id='humidity'></span> %</p>
+      <p>PPM Value: <span id='ppm'></span> ppm</p>
+    </div>
+    <button onclick='refreshData()'>Refresh Data</button>
+  </div>
+
+  <div class='container'>
+    <h2>Fan Control</h2>
+    <div>
+      <a href='/fan/on' class='btn'>Turn ON Fan</a>
+      <a href='/fan/off' class='btn'>Turn OFF Fan</a>
+      <a href='/auto' class='btn'>Auto Mode</a>
+    </div>
+  </div>
+
+  <script>
+    // Default values for temperature, humidity, and ppm
+    let temperature = 25.5;
+    let humidity = 50.0;
+    let ppmValue = 100.0;
+
+    // Function to update sensor data
+    function refreshData() {
+      // Update HTML elements with default values
+      document.getElementById('temperature').innerText = temperature;
+      document.getElementById('humidity').innerText = humidity;
+      document.getElementById('ppm').innerText = ppmValue;
+    }
+
+    // Refresh data on page load
+    window.onload = refreshData;
+
+    // Function to handle Auto mode logic
+    function handleAutoMode() {
+      if (temperature > 27 && humidity < 30) {
+        // Turn ON the fan
+        fetch('/fan/on')
+          .then(() => console.log('Fan turned ON in Auto mode'))
+          .catch(error => console.error('Error turning ON fan in Auto mode:', error));
+      } else {
+        // Turn OFF the fan
+        fetch('/fan/off')
+          .then(() => console.log('Fan turned OFF in Auto mode'))
+          .catch(error => console.error('Error turning OFF fan in Auto mode:', error));
+      }
+    }
+
+    // Function to handle Auto mode button click
+    document.querySelector('a[href="/auto"]').addEventListener('click', function(event) {
+      event.preventDefault(); // Prevent default link behavior
+      handleAutoMode();
+    });
+  </script>
+</body>
+</html>
